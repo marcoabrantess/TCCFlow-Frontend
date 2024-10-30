@@ -15,7 +15,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     // Mock data for login credentials
-    const mockEmail = 'user';
+    const mockEmail = 'user@example.com';
     const mockPassword = '123456';
 
     const login = (email: string, password: string): boolean => {
