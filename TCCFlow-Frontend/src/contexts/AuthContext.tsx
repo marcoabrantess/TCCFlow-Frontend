@@ -9,7 +9,6 @@ interface AuthContextType {
     login: (email: string, password: string) => boolean;
     logout: () => void;
     hasRole: (role: UserRole) => boolean;
-    hasAnyRole: (roles: UserRole[]) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -43,8 +42,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
     // Helper functions to check roles
     const hasRole = (role: UserRole) => userRoles.includes(role);
-    const hasAnyRole = (roles: UserRole[]) =>
-        roles.some((role) => userRoles.includes(role));
 
     return (
         <AuthContext.Provider
@@ -54,7 +51,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
                 login,
                 logout,
                 hasRole,
-                hasAnyRole,
             }}
         >
             {children}
