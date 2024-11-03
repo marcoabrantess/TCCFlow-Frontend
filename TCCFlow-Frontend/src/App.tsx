@@ -1,14 +1,23 @@
-import React from 'react';
-import { GlobalStyles } from './styles/GlobalStyles';
-import AppRouter from './Router';
+import { ThemeProvider } from 'styled-components';
+import { defaultTheme } from './styles/themes/default';
+import { GlobalStyle } from './styles/global';
+
+import { Router } from './router/Router';
+
 import { AuthProvider } from './contexts/AuthContext';
+
+import { BrowserRouter } from 'react-router-dom';
 
 const App: React.FC = () => {
     return (
-        <AuthProvider>
-            <GlobalStyles />
-            <AppRouter />
-        </AuthProvider>
+        <ThemeProvider theme={defaultTheme}>
+            <AuthProvider>
+                <BrowserRouter>
+                    <Router />
+                </BrowserRouter>
+            </AuthProvider>
+            <GlobalStyle />
+        </ThemeProvider>
     );
 };
 

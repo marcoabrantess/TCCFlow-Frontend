@@ -1,12 +1,18 @@
+// src/pages/styles.ts
 import styled from 'styled-components';
 
 export const LoginContainer = styled.main`
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     padding: 2rem;
     height: 100vh;
-    background-color: #f4f6f8;
+    background-color: ${({ theme }) => theme['gray-100']}; /* Fundo suave */
+
+    @media (max-width: 768px) {
+        padding: 1rem;
+    }
 `;
 
 export const LoginForm = styled.form`
@@ -16,28 +22,53 @@ export const LoginForm = styled.form`
     width: 100%;
     max-width: 400px;
     padding: 2rem;
-    background: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: ${({ theme }) => theme.white}; /* Fundo branco */
+    color: ${({ theme }) => theme['gray-900']}; /* Texto escuro */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
+    transition: transform 0.2s ease;
+
+    h2 {
+        font-size: 1.5rem;
+        color: ${({ theme }) =>
+            theme['blue-500']}; /* Cor principal para o título */
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    &:hover {
+        transform: translateY(-4px); /* Efeito hover sutil */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
 `;
 
 export const Input = styled.input`
     padding: 0.8rem;
     font-size: 1rem;
-    border: 1px solid #ccc;
+    border: 1px solid ${({ theme }) => theme['gray-400']};
     border-radius: 4px;
+    color: ${({ theme }) => theme['gray-900']};
+    background-color: ${({ theme }) => theme['gray-100']};
+    transition: border-color 0.2s ease;
+
+    &:focus {
+        border-color: ${({ theme }) => theme['blue-500']};
+        outline: none;
+    }
 `;
 
 export const Button = styled.button`
     padding: 0.8rem;
     font-size: 1rem;
-    color: #fff;
-    background-color: #4a90e2;
+    color: ${({ theme }) => theme.white};
+    background-color: ${({ theme }) => theme['blue-500']}; /* Cor de destaque */
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.2s ease;
 
     &:hover {
-        background-color: #357abd;
+        background-color: ${({ theme }) =>
+            theme['blue-700']}; /* Tom mais escuro no hover */
     }
 `;

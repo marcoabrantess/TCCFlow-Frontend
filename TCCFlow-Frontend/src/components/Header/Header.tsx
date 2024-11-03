@@ -1,27 +1,17 @@
+// src/components/Header/Header.tsx
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { HeaderContainer, NavLink, LogoutButton } from './styles';
+import { HeaderContainer, LogoLink, NavButton, LogoutButton } from './styles';
 
 export const Header: React.FC = () => {
-    const { isAuthenticated, logout } = useAuth();
+    const { logout } = useAuth();
 
     return (
         <HeaderContainer>
-            <h1>TCCFlow</h1>
+            <LogoLink to="/">TCCFlow</LogoLink>
             <nav>
-                {isAuthenticated && (
-                    <NavLink as={Link} to="/">
-                        Home
-                    </NavLink>
-                )}
-                {isAuthenticated ? (
-                    <LogoutButton onClick={logout}>Logout</LogoutButton>
-                ) : (
-                    <NavLink as={Link} to="/login">
-                        Login
-                    </NavLink>
-                )}
+                <NavButton to="/tasks">Atividades</NavButton>{' '}
+                <LogoutButton onClick={logout}>Logout</LogoutButton>
             </nav>
         </HeaderContainer>
     );
