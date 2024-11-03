@@ -1,8 +1,9 @@
-// src/pages/Login.tsx
 import React, { useState } from 'react';
-import { LoginContainer, LoginForm, Input, Button } from './styles';
-import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+
+import { useAuth } from '../../contexts/AuthContext';
+
+import { LoginContainer, LoginForm, Input, Button } from './styles';
 
 export const Login: React.FC = () => {
     const { login } = useAuth();

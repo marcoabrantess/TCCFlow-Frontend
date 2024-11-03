@@ -20,7 +20,7 @@ export const AddTaskButton = styled.button`
     }
 `;
 
-export const TaskList = styled.ul`
+export const TaskItemsContainer = styled.ul`
     list-style: none;
     padding: 0;
 `;
@@ -28,7 +28,7 @@ export const TaskList = styled.ul`
 export const TaskItem = styled.li<{ completed: boolean }>`
     padding: 1rem;
     background-color: ${({ completed, theme }) =>
-        completed ? theme['gray-300'] : theme['blue-100']};
+        completed ? theme['gray-300'] : theme['white']};
     color: ${({ completed, theme }) =>
         completed ? theme['gray-500'] : theme['gray-900']};
     border: 1px solid ${({ theme }) => theme['gray-400']};

@@ -1,5 +1,5 @@
-// src/pages/Home.tsx
 import React from 'react';
+
 import { HomeContainer, HomeContent } from './styles.ts';
 
 export const Home: React.FC = () => (

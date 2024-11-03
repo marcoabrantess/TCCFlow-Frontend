@@ -1,10 +1,16 @@
-// src/pages/TaskListPage.tsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TaskContainer, TaskList, TaskItem, AddTaskButton } from './styles';
+
 import { useAuth } from '../../contexts/AuthContext';
 
-export const TaskListPage: React.FC = () => {
+import {
+    TaskContainer,
+    TaskItemsContainer,
+    TaskItem,
+    AddTaskButton,
+} from './styles';
+
+export const TaskList: React.FC = () => {
     const { hasRole } = useAuth();
     const navigate = useNavigate();
 
@@ -26,7 +32,7 @@ export const TaskListPage: React.FC = () => {
                     Criar Tarefa
                 </AddTaskButton>
             )}
-            <TaskList>
+            <TaskItemsContainer>
                 {tasks.map((task) => (
                     <TaskItem
                         key={task.id}
@@ -36,7 +42,7 @@ export const TaskListPage: React.FC = () => {
                         {task.title}
                     </TaskItem>
                 ))}
-            </TaskList>
+            </TaskItemsContainer>
         </TaskContainer>
     );
 };

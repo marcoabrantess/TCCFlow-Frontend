@@ -35,7 +35,7 @@ export const NavButton = styled(Link)`
     padding: 0.5rem 1rem;
     font-size: 1rem;
     color: ${({ theme }) => theme.white};
-    background-color: ${({ theme }) => theme['green-500']};
+    background-color: ${({ theme }) => theme['blue-300']};
     border: none;
     border-radius: 4px;
     text-decoration: none;
@@ -47,7 +47,6 @@ export const NavButton = styled(Link)`
         transform 0.2s;
 
     &:hover {
-        background-color: ${({ theme }) => theme['green-700']};
         transform: translateY(-2px);
     }
 

@@ -1,10 +1,11 @@
-// src/pages/TaskDetailsPage.tsx
 import React from 'react';
 import { useParams } from 'react-router-dom';
+
 import { useAuth } from '../../contexts/AuthContext';
+
 import { TaskDetailsContainer, TaskActionButton } from './styles';
 
-export const TaskDetailsPage: React.FC = () => {
+export const TaskDetails: React.FC = () => {
     const { id } = useParams();
     const { hasRole } = useAuth();
 

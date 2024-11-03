@@ -10,13 +10,13 @@ export const TCCDownloadButton = styled.a`
     padding: 0.5rem 1rem;
     font-size: 1rem;
     color: ${({ theme }) => theme.white};
-    background-color: ${({ theme }) => theme['blue-500']};
+    background-color: ${({ theme }) => theme['blue-300']};
     border: none;
     border-radius: 4px;
     text-decoration: none;
     transition: background-color 0.2s;
 
     &:hover {
-        background-color: ${({ theme }) => theme['blue-700']};
+        transform: translateY(-2px);
     }
 `;

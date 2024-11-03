@@ -1,6 +1,7 @@
 // src/pages/TCCDetailsPage.tsx
 import React from 'react';
 import { useParams } from 'react-router-dom';
+
 import { TCCDetailsContainer, TCCDownloadButton } from './styles';
 
 export const TCCDetails: React.FC = () => {

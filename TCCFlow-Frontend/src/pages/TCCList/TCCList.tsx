@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import { TCCContainer, TCCListDiv, TCCItem } from './styles';
 
 export const TCCList: React.FC = () => {
