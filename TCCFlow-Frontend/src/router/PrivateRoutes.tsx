@@ -7,6 +7,8 @@ import { Home } from '../pages/Home/Home';
 import { TaskListPage } from '../pages/TaskList/TaskList';
 import { TaskDetailsPage } from '../pages/TaskDetail/TaskDetail';
 import { CreateTask } from '../pages/CreateTask/CreateTask';
+import { TCCList } from '../pages/TCCList/TCCList';
+import { TCCDetails } from '../pages/TCCDetails/TCCDetails';
 
 export const PrivateRoutes: React.FC = () => {
     const { hasRole } = useAuth();
@@ -21,6 +23,8 @@ export const PrivateRoutes: React.FC = () => {
                 {hasRole('coordenador') && (
                     <Route path="/tasks/create" element={<CreateTask />} />
                 )}
+                <Route path="/tccs" element={<TCCList />} />
+                <Route path="/tccs/:id" element={<TCCDetails />} />
             </Routes>
         </>
     );

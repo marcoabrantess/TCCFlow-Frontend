@@ -10,7 +10,8 @@ export const Header: React.FC = () => {
         <HeaderContainer>
             <LogoLink to="/">TCCFlow</LogoLink>
             <nav>
-                <NavButton to="/tasks">Atividades</NavButton>{' '}
+                <NavButton to="/tasks">Atividades</NavButton>
+                <NavButton to="/tccs">Repositório de TCCs</NavButton>
                 <LogoutButton onClick={logout}>Logout</LogoutButton>
             </nav>
         </HeaderContainer>
