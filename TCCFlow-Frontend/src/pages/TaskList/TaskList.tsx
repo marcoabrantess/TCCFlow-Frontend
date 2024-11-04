@@ -36,7 +36,7 @@ export const TaskList: React.FC = () => {
                 {tasks.map((task) => (
                     <TaskItem
                         key={task.id}
-                        completed={task.completed}
+                        $completed={task.completed}
                         onClick={() => handleTaskClick(task.id)}
                     >
                         {task.title}

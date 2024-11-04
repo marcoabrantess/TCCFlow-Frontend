@@ -31,12 +31,12 @@ export const TaskItemsContainer = styled.ul`
     padding: 0;
 `;
 
-export const TaskItem = styled.li<{ completed: boolean }>`
+export const TaskItem = styled.li<{ $completed: boolean }>`
     padding: 1rem;
-    background-color: ${({ completed, theme }) =>
-        completed ? theme['gray-300'] : theme['white']};
-    color: ${({ completed, theme }) =>
-        completed ? theme['gray-500'] : theme['gray-900']};
+    background-color: ${({ $completed, theme }) =>
+        $completed ? theme['gray-300'] : theme['white']};
+    color: ${({ $completed, theme }) =>
+        $completed ? theme['gray-500'] : theme['gray-900']};
     border: 1px solid ${({ theme }) => theme['gray-400']};
     border-radius: 4px;
     margin-bottom: 1rem;
@@ -44,7 +44,7 @@ export const TaskItem = styled.li<{ completed: boolean }>`
     transition: background-color 0.2s;
 
     &:hover {
-        background-color: ${({ completed, theme }) =>
-            completed ? theme['gray-400'] : theme['blue-300']};
+        background-color: ${({ $completed, theme }) =>
+            $completed ? theme['gray-400'] : theme['blue-300']};
     }
 `;
