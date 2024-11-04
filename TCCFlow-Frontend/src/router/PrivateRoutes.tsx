@@ -9,6 +9,7 @@ import { TaskDetails } from '../pages/TaskDetail/TaskDetail';
 import { CreateTask } from '../pages/CreateTask/CreateTask';
 import { TCCList } from '../pages/TCCList/TCCList';
 import { TCCDetails } from '../pages/TCCDetails/TCCDetails';
+import { EditProfile } from '../pages/EditProfile/EditProfile';
 
 export const PrivateRoutes: React.FC = () => {
     const { hasRole } = useAuth();
@@ -25,6 +26,7 @@ export const PrivateRoutes: React.FC = () => {
                 )}
                 <Route path="/tccs" element={<TCCList />} />
                 <Route path="/tccs/:id" element={<TCCDetails />} />
+                <Route path="/edit-profile" element={<EditProfile />} />
             </Routes>
         </>
     );

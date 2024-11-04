@@ -1,4 +1,3 @@
-// src/components/Header/styles.ts
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 
@@ -24,18 +23,24 @@ export const LogoLink = styled(Link)`
     color: ${({ theme }) => theme.white};
     text-decoration: none;
     transition: color 0.2s;
+    margin-right: auto;
 
     &:hover {
         color: ${({ theme }) => theme['blue-300']};
     }
 `;
 
+export const NavContainer = styled.nav`
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+`;
+
 export const NavButton = styled(Link)`
-    margin-right: 1rem;
     padding: 0.5rem 1rem;
     font-size: 1rem;
     color: ${({ theme }) => theme.white};
-    background-color: ${({ theme }) => theme['blue-300']};
+    background-color: ${({ theme }) => theme['blue-700']};
     border: none;
     border-radius: 4px;
     text-decoration: none;
@@ -47,7 +52,7 @@ export const NavButton = styled(Link)`
         transform 0.2s;
 
     &:hover {
-        transform: translateY(-2px);
+        background-color: ${({ theme }) => theme['blue-300']};
     }
 
     &:active {
@@ -55,17 +60,9 @@ export const NavButton = styled(Link)`
     }
 `;
 
-export const LogoutButton = styled.button`
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    color: ${({ theme }) => theme.white};
-    background-color: ${({ theme }) => theme['red-500']};
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-
-    &:hover {
-        background-color: ${({ theme }) => theme['red-700']};
-    }
+export const UserContainer = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 1rem;
 `;

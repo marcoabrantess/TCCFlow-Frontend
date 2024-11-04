@@ -1,4 +1,3 @@
-// src/pages/styles.ts
 import styled from 'styled-components';
 
 export const LoginContainer = styled.main`
@@ -8,7 +7,7 @@ export const LoginContainer = styled.main`
     justify-content: center;
     padding: 2rem;
     height: 100vh;
-    background-color: ${({ theme }) => theme['gray-100']}; /* Fundo suave */
+    background-color: ${({ theme }) => theme['gray-100']};
 
     @media (max-width: 768px) {
         padding: 1rem;
@@ -22,22 +21,19 @@ export const LoginForm = styled.form`
     width: 100%;
     max-width: 400px;
     padding: 2rem;
-    background: ${({ theme }) => theme.white}; /* Fundo branco */
-    color: ${({ theme }) => theme['gray-900']}; /* Texto escuro */
+    background: ${({ theme }) => theme.white};
+    color: ${({ theme }) => theme['gray-900']};
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    transition: transform 0.2s ease;
 
     h2 {
         font-size: 1.5rem;
-        color: ${({ theme }) =>
-            theme['blue-500']}; /* Cor principal para o título */
+        color: ${({ theme }) => theme['blue-500']};
         margin-bottom: 1rem;
         text-align: center;
     }
 
     &:hover {
-        transform: translateY(-4px); /* Efeito hover sutil */
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
     }
 `;
@@ -52,7 +48,9 @@ export const Input = styled.input`
     transition: border-color 0.2s ease;
 
     &:focus {
+        background-color: ${({ theme }) => theme.white};
         border-color: ${({ theme }) => theme['blue-500']};
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         outline: none;
     }
 `;

@@ -1,11 +1,17 @@
-// src/context/AuthContext.tsx
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type UserRole = 'coordenador' | 'orientador' | 'aluno';
 
+interface User {
+    fullName: string;
+    photoUrl?: string;
+    email: string;
+}
+
 interface AuthContextType {
     isAuthenticated: boolean;
     userRoles: UserRole[];
+    user: User | null;
     login: (email: string, password: string) => boolean;
     logout: () => void;
     hasRole: (role: UserRole) => boolean;
@@ -18,16 +24,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userRoles, setUserRoles] = useState<UserRole[]>([]);
+    const [user, setUser] = useState<User | null>(null);
 
-    // Mock data for login credentials and roles
     const mockEmail = 'user@example.com';
     const mockPassword = '123456';
-    const mockRoles: UserRole[] = ['aluno', 'coordenador']; // Mock roles, can include multiple roles
+    const mockRoles: UserRole[] = ['aluno', 'coordenador'];
+    const mockUser: User = {
+        fullName: 'Marco Aurélio',
+        photoUrl: '',
+        email: mockEmail,
+    };
 
     const login = (email: string, password: string): boolean => {
         if (email === mockEmail && password === mockPassword) {
             setIsAuthenticated(true);
-            setUserRoles(mockRoles); // Set mock roles on successful login
+            setUserRoles(mockRoles);
+            setUser(mockUser);
             return true;
         } else {
             alert('Credenciais inválidas');
@@ -37,10 +49,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
     const logout = () => {
         setIsAuthenticated(false);
-        setUserRoles([]); // Clear roles on logout
+        setUserRoles([]);
+        setUser(null);
     };
 
-    // Helper functions to check roles
     const hasRole = (role: UserRole) => userRoles.includes(role);
 
     return (
@@ -48,6 +60,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
             value={{
                 isAuthenticated,
                 userRoles,
+                user,
                 login,
                 logout,
                 hasRole,

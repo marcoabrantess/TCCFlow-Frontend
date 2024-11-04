@@ -1,4 +1,3 @@
-// src/pages/TCCDetailsPage.tsx
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
@@ -7,12 +6,11 @@ import { TCCDetailsContainer, TCCDownloadButton } from './styles';
 export const TCCDetails: React.FC = () => {
     const { id } = useParams();
 
-    // Dados fictícios para o TCC
     const tcc = {
         title: `TCC ${id}`,
         author: 'Autor Exemplo',
         advisor: 'Orientador Exemplo',
-        thesisFile: '/path/to/monografia.pdf',
+        thesisFile: 'monografia.pdf',
     };
 
     return (

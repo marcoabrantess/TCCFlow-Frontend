@@ -9,7 +9,6 @@ export const TCCList: React.FC = () => {
     const tccs = [
         { id: 1, title: 'TCC 1', author: 'Autor 1' },
         { id: 2, title: 'TCC 2', author: 'Autor 2' },
-        // Exemplo de TCCs
     ];
 
     const handleTCCClick = (id: number) => {

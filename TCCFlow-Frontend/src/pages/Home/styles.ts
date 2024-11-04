@@ -1,4 +1,3 @@
-// src/pages/styles.ts
 import styled from 'styled-components';
 
 export const HomeContainer = styled.main`
@@ -7,8 +6,7 @@ export const HomeContainer = styled.main`
     align-items: center;
     padding: 3rem;
     text-align: center;
-    background-color: ${({ theme }) =>
-        theme['gray-100']}; /* Fundo mais suave */
+    background-color: ${({ theme }) => theme['gray-100']};
     min-height: 100vh;
 
     @media (max-width: 768px) {
@@ -21,26 +19,20 @@ export const HomeContent = styled.section`
     width: 100%;
     padding: 2rem;
     background-color: ${({ theme }) => theme.white};
-    color: ${({ theme }) => theme['gray-900']}; /* Texto escuro */
+    color: ${({ theme }) => theme['gray-900']};
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     transition: transform 0.2s ease;
 
-    h2 {
+    h1 {
         font-size: 1.75rem;
-        color: ${({ theme }) =>
-            theme['blue-500']}; /* Cor principal para o título */
+        color: ${({ theme }) => theme['blue-500']};
         margin-bottom: 1rem;
     }
 
     p {
         font-size: 1rem;
-        color: ${({ theme }) => theme['gray-700']}; /* Texto secundário */
+        color: ${({ theme }) => theme['gray-700']};
         line-height: 1.6;
-    }
-
-    &:hover {
-        transform: translateY(-4px); /* Efeito hover sutil */
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
     }
 `;

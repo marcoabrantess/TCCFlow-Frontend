@@ -6,7 +6,8 @@ export const Home: React.FC = () => (
     <>
         <HomeContainer>
             <HomeContent>
-                <h2>Bem-vindo ao TCCFlow!</h2>
+                <h1>Bem-vindo ao TCCFlow!</h1>
+
                 <p>
                     Gerencie de forma prática o desenvolvimento do seu TCC com
                     ferramentas integradas e automações.
