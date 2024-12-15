@@ -1,4 +1,3 @@
-// src/pages/styles.ts
 import styled from 'styled-components';
 
 export const EditProfileContainer = styled.div`

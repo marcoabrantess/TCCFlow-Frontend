@@ -4,7 +4,6 @@ import { z } from 'zod';
 import api from '../../services/api';
 import { CreateTCCContainer, Form, Input, Button } from './styles';
 
-// Esquema de validação com Zod
 const tccSchema = z.object({
     title: z.string().min(1, 'Título é obrigatório'),
     authorName: z.string().min(1, 'Nome do autor é obrigatório'),

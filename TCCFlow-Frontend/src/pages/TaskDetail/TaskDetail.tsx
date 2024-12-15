@@ -1,4 +1,3 @@
-// Importações necessárias
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../services/api';
@@ -15,7 +14,6 @@ import {
     RoleInfo,
 } from './styles';
 
-// Definição de tipos
 interface Question {
     _id: string;
     text: string;
@@ -29,7 +27,6 @@ interface Task {
     isCompleted: boolean;
 }
 
-// Componente principal
 export const TaskDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { hasRole } = useAuth();
@@ -37,14 +34,12 @@ export const TaskDetails: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [responses, setResponses] = useState<Record<string, string>>({});
-    const [isEditing, setIsEditing] = useState<boolean>(false); // Estado para gerenciar o modo de edição
+    const [isEditing, setIsEditing] = useState<boolean>(false);
 
-    // Funções para interagir com a API
     const fetchTaskDetails = async () => {
         try {
             const response = await api.get(`/tasks/${id}`);
             setTask(response.data);
-            // Inicializa as respostas com os valores existentes
             const initialResponses = response.data.questions.reduce(
                 (acc, question) => ({
                     ...acc,
@@ -91,7 +86,7 @@ export const TaskDetails: React.FC = () => {
                 headers: { 'Content-Type': 'application/json' },
             });
             alert('Respostas enviadas com sucesso!');
-            setIsEditing(false); // Desativa o modo de edição após o envio
+            setIsEditing(false);
         } catch (err) {
             console.error('Erro ao enviar respostas:', err);
             alert('Erro ao enviar respostas. Tente novamente.');
