@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
-import { TCCContainer, TCCListDiv, TCCItem, CreateButton } from './styles';
+import {
+    TCCContainer,
+    TCCListDiv,
+    TCCItem,
+    CreateButton,
+    SearchInput,
+} from './styles';
 
 interface TCC {
     _id: number;
@@ -12,6 +18,8 @@ interface TCC {
 export const TCCList: React.FC = () => {
     const navigate = useNavigate();
     const [tccs, setTCCs] = useState<TCC[]>([]);
+    const [filteredTCCs, setFilteredTCCs] = useState<TCC[]>([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -19,6 +27,7 @@ export const TCCList: React.FC = () => {
         try {
             const response = await api.get('/tcc');
             setTCCs(response?.data);
+            setFilteredTCCs(response?.data);
         } catch (err) {
             console.error('Failed to fetch TCCs:', err);
             setError('Erro ao carregar os TCCs. Tente novamente.');
@@ -30,6 +39,15 @@ export const TCCList: React.FC = () => {
     useEffect(() => {
         fetchTCCs();
     }, []);
+
+    useEffect(() => {
+        const results = tccs.filter(
+            (tcc) =>
+                tcc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                tcc.authorName.toLowerCase().includes(searchTerm.toLowerCase()),
+        );
+        setFilteredTCCs(results);
+    }, [searchTerm, tccs]);
 
     const handleTCCClick = (id: number) => {
         navigate(`/tcc/${id}`);
@@ -50,11 +68,17 @@ export const TCCList: React.FC = () => {
     return (
         <TCCContainer>
             <h1>Repositório de TCCs</h1>
+            <SearchInput
+                type="text"
+                placeholder="Pesquisar por título ou autor"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
             <CreateButton onClick={handleCreateClick}>
                 Criar Novo TCC
             </CreateButton>
             <TCCListDiv>
-                {tccs.map((tcc) => (
+                {filteredTCCs.map((tcc) => (
                     <TCCItem
                         key={tcc._id}
                         onClick={() => handleTCCClick(tcc._id)}

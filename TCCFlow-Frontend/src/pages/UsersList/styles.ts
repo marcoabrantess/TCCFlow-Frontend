@@ -43,6 +43,6 @@ export const SearchInput = styled.input`
     &:focus {
         border-color: ${({ theme }) => theme['blue-700']};
         outline: none;
-        box-shadow: 0 0 0 3px ${({ theme }) => theme['blue-500']};
+        box-shadow: 0 0 0 0.05rem ${({ theme }) => theme['blue-500']};
     }
 `;

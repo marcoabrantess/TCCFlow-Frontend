@@ -45,3 +45,20 @@ export const CreateButton = styled.button`
         background-color: ${({ theme }) => theme['blue-700']};
     }
 `;
+
+export const SearchInput = styled.input`
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid ${({ theme }) => theme['gray-300']};
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    width: 100%;
+    color: ${({ theme }) => theme['gray-900']};
+    background-color: ${({ theme }) => theme['white']};
+
+    &:focus {
+        border-color: ${({ theme }) => theme['blue-700']};
+        outline: none;
+        box-shadow: 0 0 0 0.05rem ${({ theme }) => theme['blue-500']};
+    }
+`;
