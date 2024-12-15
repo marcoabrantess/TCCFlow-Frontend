@@ -3,7 +3,7 @@ import api from '../../services/api';
 import { UsersContainer, UserItem, SearchInput } from './styles';
 
 interface User {
-    id: string;
+    _id: string;
     name: string;
     email: string;
     isActive: boolean;
@@ -48,7 +48,7 @@ export const UsersList: React.FC = () => {
             />
             <ul>
                 {filteredUsers.map((user) => (
-                    <UserItem key={user.id}>
+                    <UserItem key={user._id}>
                         <p>
                             {user.name} - {user.email} -{' '}
                             {user.isActive ? 'Ativo' : 'Inativo'}
