@@ -2,6 +2,15 @@ import styled from 'styled-components';
 
 export const TCCDetailsContainer = styled.div`
     padding: 2rem;
+    h1 {
+        margin-bottom: 1rem;
+        color: ${({ theme }) => theme['blue-500']};
+    }
+
+    p {
+        margin-bottom: 1rem;
+        color: ${({ theme }) => theme['gray-800']};
+    }
 `;
 
 export const TCCDownloadButton = styled.a`

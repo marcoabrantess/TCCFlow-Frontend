@@ -29,3 +29,19 @@ export const TCCItem = styled.li`
         background-color: ${({ theme }) => theme['blue-300']};
     }
 `;
+
+export const CreateButton = styled.button`
+    padding: 0.8rem 1.5rem;
+    background-color: ${({ theme }) => theme['blue-500']};
+    color: ${({ theme }) => theme.white};
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+        background-color: ${({ theme }) => theme['blue-700']};
+    }
+`;

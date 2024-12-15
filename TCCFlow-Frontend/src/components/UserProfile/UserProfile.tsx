@@ -3,14 +3,11 @@ import { UserMenu } from '../UserMenu/UserMenu';
 import { UserProfileContainer, UserAvatar, InitialsCircle } from './styles';
 
 interface UserProfileProps {
-    fullName: string;
+    name: string;
     photoUrl?: string;
 }
 
-export const UserProfile: React.FC<UserProfileProps> = ({
-    fullName,
-    photoUrl,
-}) => {
+export const UserProfile: React.FC<UserProfileProps> = ({ name, photoUrl }) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -51,7 +48,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({
                 />
             ) : (
                 <InitialsCircle onClick={toggleMenu}>
-                    {getInitials(fullName)}
+                    {getInitials(name)}
                 </InitialsCircle>
             )}
             {menuOpen && <UserMenu onClose={() => setMenuOpen(false)} />}

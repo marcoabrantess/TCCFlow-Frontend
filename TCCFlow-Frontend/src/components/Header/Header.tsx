@@ -20,14 +20,11 @@ export const Header: React.FC = () => {
             <LogoLink to="/">TCCFlow</LogoLink>
             <NavContainer>
                 <NavButton to="/tasks">Tarefas</NavButton>
-                <NavButton to="/tccs">Repositório de TCCs</NavButton>
+                <NavButton to="/tcc">Repositório de TCCs</NavButton>
             </NavContainer>
             <UserContainer>
                 {user ? (
-                    <UserProfile
-                        fullName={user.fullName}
-                        photoUrl={user.photoUrl}
-                    />
+                    <UserProfile name={user.name} photoUrl={user.photoUrl} />
                 ) : (
                     <p>Carregando...</p>
                 )}

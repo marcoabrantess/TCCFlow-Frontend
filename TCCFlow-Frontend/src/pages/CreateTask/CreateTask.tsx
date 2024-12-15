@@ -1,8 +1,8 @@
-// src/pages/CreateTask/CreateTask.tsx
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import api from '../../services/api';
 import { useNavigate } from 'react-router-dom';
 import {
     CreateTaskContainer,
@@ -10,6 +10,9 @@ import {
     ErrorText,
     SubmitButton,
     SuccessMessage,
+    QuestionContainer,
+    AddQuestionButton,
+    RemoveButton,
 } from './styles';
 
 const taskSchema = z.object({
@@ -17,32 +20,41 @@ const taskSchema = z.object({
         .string()
         .min(3, 'O título deve ter pelo menos 3 caracteres')
         .nonempty('O título é obrigatório'),
-    description: z
-        .string()
-        .max(500, 'A descrição não pode ter mais que 500 caracteres')
-        .optional(),
-    file: z.any().optional(),
+    questions: z.array(
+        z.object({
+            text: z.string().min(1, 'A questão não pode estar vazia'),
+        }),
+    ),
 });
 
-type TaskFormData = z.infer<typeof taskSchema>;
+type TaskFormValues = z.infer<typeof taskSchema>;
 
 export const CreateTask: React.FC = () => {
     const navigate = useNavigate();
-    const [submitSuccess, setSubmitSuccess] = useState(false);
     const {
         register,
+        control,
         handleSubmit,
         formState: { errors },
-    } = useForm<TaskFormData>({
+    } = useForm<TaskFormValues>({
         resolver: zodResolver(taskSchema),
     });
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: 'questions',
+    });
+    const [submitSuccess, setSubmitSuccess] = useState(false);
 
-    const onSubmit = (data: TaskFormData) => {
-        console.log('Dados da nova tarefa:', data);
-        setSubmitSuccess(true);
-        setTimeout(() => {
-            navigate('/tasks');
-        }, 2000);
+    const onSubmit = async (data: TaskFormValues) => {
+        try {
+            await api.post('/tasks', data, {
+                headers: { 'Content-Type': 'application/json' },
+            });
+            setSubmitSuccess(true);
+            navigate('/');
+        } catch (error) {
+            console.error('Erro ao criar task:', error);
+        }
     };
 
     return (
@@ -57,18 +69,30 @@ export const CreateTask: React.FC = () => {
                     )}
                 </FormGroup>
 
-                <FormGroup>
-                    <label htmlFor="description">Descrição</label>
-                    <textarea id="description" {...register('description')} />
-                    {errors.description && (
-                        <ErrorText>{errors.description.message}</ErrorText>
-                    )}
-                </FormGroup>
-
-                <FormGroup>
-                    <label htmlFor="file">Anexo</label>
-                    <input type="file" id="file" {...register('file')} />
-                </FormGroup>
+                {fields.map((field, index) => (
+                    <QuestionContainer key={field.id}>
+                        <label htmlFor={`questions.${index}.text`}>
+                            Questão {index + 1}
+                        </label>
+                        <input
+                            type="text"
+                            {...register(`questions.${index}.text`)}
+                        />
+                        <RemoveButton
+                            type="button"
+                            onClick={() => remove(index)}
+                        >
+                            Remover Questão
+                        </RemoveButton>
+                    </QuestionContainer>
+                ))}
+                <AddQuestionButton
+                    type="button"
+                    onClick={() => append({ text: '' })}
+                >
+                    Adicionar Questão
+                </AddQuestionButton>
+                <br />
 
                 <SubmitButton type="submit">Criar Tarefa</SubmitButton>
                 {submitSuccess && (

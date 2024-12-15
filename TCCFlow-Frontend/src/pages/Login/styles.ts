@@ -59,14 +59,20 @@ export const Button = styled.button`
     padding: 0.8rem;
     font-size: 1rem;
     color: ${({ theme }) => theme.white};
-    background-color: ${({ theme }) => theme['blue-500']}; /* Cor de destaque */
+    background-color: ${({ theme }) => theme['blue-500']};
     border: none;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s ease;
 
     &:hover {
-        background-color: ${({ theme }) =>
-            theme['blue-700']}; /* Tom mais escuro no hover */
+        background-color: ${({ theme }) => theme['blue-700']};
     }
+`;
+
+export const ErrorMessage = styled.div`
+    color: ${({ theme }) => theme['red-500']};
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    text-align: center;
 `;
