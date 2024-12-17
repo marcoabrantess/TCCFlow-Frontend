@@ -11,6 +11,7 @@ import { TCCDetails } from '../pages/TCCDetails/TCCDetails';
 import { EditProfile } from '../pages/EditProfile/EditProfile';
 import { UsersList } from '../pages/UsersList/UsersList';
 import { CreateTCC } from '../pages/CreateTCC/CreateTCC';
+import { Chat } from '../pages/Chat/Chat';
 
 export const PrivateRoutes: React.FC = () => {
     const { hasRole } = useAuth();
@@ -28,8 +29,14 @@ export const PrivateRoutes: React.FC = () => {
                 <Route path="/tcc" element={<TCCList />} />
                 <Route path="/tcc/:id" element={<TCCDetails />} />
                 <Route path="/tcc/create" element={<CreateTCC />} />
+
                 <Route path="/edit-profile" element={<EditProfile />} />
-                <Route path="/users" element={<UsersList />} />
+
+                {hasRole('coordenador') && (
+                    <Route path="/users" element={<UsersList />} />
+                )}
+
+                <Route path="/chat" element={<Chat />} />
             </Routes>
         </>
     );
