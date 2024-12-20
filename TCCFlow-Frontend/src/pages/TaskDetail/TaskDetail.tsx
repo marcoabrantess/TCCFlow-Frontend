@@ -28,26 +28,37 @@ interface Task {
 }
 
 export const TaskDetails: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
-    const { hasRole } = useAuth();
+    const { id: taskId } = useParams<{ id: string }>();
+    const { hasRole, user } = useAuth();
+    const userId = user?._id;
+
     const [task, setTask] = useState<Task | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [responses, setResponses] = useState<Record<string, string>>({});
-    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [isCompleted, setIsCompleted] = useState<boolean>(false);
+
+    const storageKey = `respostas_${userId}_${taskId}`;
 
     const fetchTaskDetails = async () => {
         try {
-            const response = await api.get(`/tasks/${id}`);
-            setTask(response.data);
-            const initialResponses = response.data.questions.reduce(
-                (acc, question) => ({
-                    ...acc,
-                    [question._id]: question.answer,
-                }),
-                {},
+            const response = await api.get(`/tasks/${taskId}`);
+            const loadedTask: Task = response.data;
+            setTask(loadedTask);
+
+            const storedData = JSON.parse(
+                localStorage.getItem(storageKey) || '{}',
             );
+            const savedResponses = storedData.responses || {};
+
+            const initialResponses: Record<string, string> = {};
+            for (const question of loadedTask.questions) {
+                initialResponses[question._id] =
+                    savedResponses[question._id] || '';
+            }
+
             setResponses(initialResponses);
+            setIsCompleted(storedData.isCompleted || false);
         } catch (err) {
             console.error('Failed to fetch Task details:', err);
             setError(
@@ -59,39 +70,61 @@ export const TaskDetails: React.FC = () => {
     };
 
     const handleInputChange = (questionId: string, value: string) => {
-        setResponses((prev) => ({
-            ...prev,
-            [questionId]: value,
-        }));
+        setResponses((prev) => {
+            const updated = { ...prev, [questionId]: value };
+            localStorage.setItem(
+                storageKey,
+                JSON.stringify({ responses: updated, isCompleted }),
+            );
+            return updated;
+        });
     };
 
-    useEffect(() => {
-        if (id) {
-            fetchTaskDetails();
-        }
-    }, [id]);
-
     const handleResponse = async () => {
+        if (!task) return;
+
+        const allAnswered = task.questions.every(
+            (q) => responses[q._id]?.trim() !== '',
+        );
+        if (!allAnswered) {
+            alert('Por favor, responda todas as questões antes de enviar.');
+            return;
+        }
+
         try {
-            const questions = task?.questions.map((q) => ({
+            const questions = task.questions.map((q) => ({
                 text: q.text,
                 answer: responses[q._id] || '',
             }));
+
             const payload = {
                 questions: questions,
                 isCompleted: true,
             };
 
-            await api.post(`/tasks/${id}`, payload, {
+            await api.post(`/tasks/${taskId}`, payload, {
                 headers: { 'Content-Type': 'application/json' },
             });
+
+            setIsCompleted(true);
+            localStorage.setItem(
+                storageKey,
+                JSON.stringify({ responses, isCompleted: true }),
+            );
+
             alert('Respostas enviadas com sucesso!');
-            setIsEditing(false);
+            window.location.reload();
         } catch (err) {
             console.error('Erro ao enviar respostas:', err);
             alert('Erro ao enviar respostas. Tente novamente.');
         }
     };
+
+    useEffect(() => {
+        if (taskId && userId) {
+            fetchTaskDetails();
+        }
+    }, [taskId, userId]);
 
     if (loading) return <p>Carregando detalhes da tarefa...</p>;
     if (error) return <p style={{ color: 'red' }}>{error}</p>;
@@ -100,17 +133,20 @@ export const TaskDetails: React.FC = () => {
     return (
         <TaskDetailsContainer>
             <TaskTitle>{task.title}</TaskTitle>
-            <TaskInfo>Informações sobre a tarefa</TaskInfo>
+            <TaskInfo>
+                Informações sobre a tarefa -{' '}
+                {isCompleted ? 'Concluída' : 'Pendente'}
+            </TaskInfo>
             <QuestionsContainer>
                 {task.questions.map((question) => (
                     <QuestionCard key={question._id}>
                         <QuestionText>{question.text}</QuestionText>
-                        {task.isCompleted && !isEditing ? (
+                        {isCompleted ? (
                             <p>{responses[question._id]}</p>
                         ) : (
                             <TextArea
                                 placeholder="Digite sua resposta aqui"
-                                value={responses[question._id]}
+                                value={responses[question._id] || ''}
                                 onChange={(e) =>
                                     handleInputChange(
                                         question._id,
@@ -122,14 +158,9 @@ export const TaskDetails: React.FC = () => {
                     </QuestionCard>
                 ))}
             </QuestionsContainer>
-            {task.isCompleted && (
-                <TaskActionButton onClick={() => setIsEditing(!isEditing)}>
-                    {isEditing ? 'Salvar Alterações' : 'Editar Respostas'}
-                </TaskActionButton>
-            )}
-            {hasRole('aluno') && !task.isCompleted && (
+            {!isCompleted && (
                 <TaskActionButton onClick={handleResponse}>
-                    Responder Tarefa
+                    Enviar resposta da tarefa
                 </TaskActionButton>
             )}
             {hasRole('orientador') && (

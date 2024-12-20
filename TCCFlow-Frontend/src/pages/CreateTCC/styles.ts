@@ -6,6 +6,13 @@ export const CreateTCCContainer = styled.div`
     border-radius: 8px;
     max-width: 600px;
     margin: 0 auto;
+
+    h1 {
+        font-size: 1.75rem;
+        color: ${({ theme }) => theme['blue-500']};
+        margin-bottom: 1rem;
+        text-align: center;
+    }
 `;
 
 export const Form = styled.form`
