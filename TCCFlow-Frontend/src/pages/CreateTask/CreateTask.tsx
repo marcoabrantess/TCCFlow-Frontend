@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import api from '../../services/api';
@@ -10,9 +10,6 @@ import {
     ErrorText,
     SubmitButton,
     SuccessMessage,
-    QuestionContainer,
-    AddQuestionButton,
-    RemoveButton,
 } from './styles';
 
 const taskSchema = z.object({
@@ -20,11 +17,14 @@ const taskSchema = z.object({
         .string()
         .min(3, 'O título deve ter pelo menos 3 caracteres')
         .nonempty('O título é obrigatório'),
-    questions: z.array(
-        z.object({
-            text: z.string().min(1, 'A questão não pode estar vazia'),
-        }),
-    ),
+    description: z
+        .string()
+        .min(10, 'A descrição deve ter pelo menos 10 caracteres')
+        .nonempty('A descrição é obrigatória'),
+    totalGrade: z
+        .number()
+        .min(0, 'A nota deve ser maior que 0')
+        .max(100, 'A nota máxima é 100'),
 });
 
 type TaskFormValues = z.infer<typeof taskSchema>;
@@ -33,22 +33,18 @@ export const CreateTask: React.FC = () => {
     const navigate = useNavigate();
     const {
         register,
-        control,
         handleSubmit,
         formState: { errors },
     } = useForm<TaskFormValues>({
         resolver: zodResolver(taskSchema),
     });
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: 'questions',
-    });
     const [submitSuccess, setSubmitSuccess] = useState(false);
 
     const onSubmit = async (data: TaskFormValues) => {
         try {
-            await api.post('/tasks', data, {
-                headers: { 'Content-Type': 'application/json' },
+            await api.post('/tasks', {
+                ...data,
+                studentGrades: [],
             });
             setSubmitSuccess(true);
             navigate('/');
@@ -69,30 +65,25 @@ export const CreateTask: React.FC = () => {
                     )}
                 </FormGroup>
 
-                {fields.map((field, index) => (
-                    <QuestionContainer key={field.id}>
-                        <label htmlFor={`questions.${index}.text`}>
-                            Questão {index + 1}
-                        </label>
-                        <input
-                            type="text"
-                            {...register(`questions.${index}.text`)}
-                        />
-                        <RemoveButton
-                            type="button"
-                            onClick={() => remove(index)}
-                        >
-                            Remover Questão
-                        </RemoveButton>
-                    </QuestionContainer>
-                ))}
-                <AddQuestionButton
-                    type="button"
-                    onClick={() => append({ text: '' })}
-                >
-                    Adicionar Questão
-                </AddQuestionButton>
-                <br />
+                <FormGroup>
+                    <label htmlFor="description">Descrição</label>
+                    <textarea id="description" {...register('description')} />
+                    {errors.description && (
+                        <ErrorText>{errors.description.message}</ErrorText>
+                    )}
+                </FormGroup>
+
+                <FormGroup>
+                    <label htmlFor="totalGrade">Nota Total</label>
+                    <input
+                        type="number"
+                        id="totalGrade"
+                        {...register('totalGrade', { valueAsNumber: true })}
+                    />
+                    {errors.totalGrade && (
+                        <ErrorText>{errors.totalGrade.message}</ErrorText>
+                    )}
+                </FormGroup>
 
                 <SubmitButton type="submit">Criar Tarefa</SubmitButton>
                 {submitSuccess && (

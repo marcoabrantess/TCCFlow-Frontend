@@ -6,59 +6,59 @@ import {
     TaskDetailsContainer,
     TaskTitle,
     TaskInfo,
-    QuestionsContainer,
-    QuestionCard,
-    QuestionText,
-    TextArea,
+    GradesContainer,
+    StudentGradeCard,
+    GradeInput,
     TaskActionButton,
-    RoleInfo,
+    //RoleInfo,
+    Description,
 } from './styles';
 
-interface Question {
+interface StudentGrade {
+    studentId: string;
+    percentageGrade: number;
+}
+
+interface Student {
     _id: string;
-    text: string;
-    answer: string;
+    name: string;
 }
 
 interface Task {
-    id: number;
+    _id: string;
     title: string;
-    questions: Question[];
-    isCompleted: boolean;
+    description: string;
+    totalGrade: number;
+    studentGrades: StudentGrade[];
 }
 
 export const TaskDetails: React.FC = () => {
     const { id: taskId } = useParams<{ id: string }>();
     const { hasRole, user } = useAuth();
-    const userId = user?._id;
-
     const [task, setTask] = useState<Task | null>(null);
+    const [students, setStudents] = useState<Student[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const [responses, setResponses] = useState<Record<string, string>>({});
-    const [isCompleted, setIsCompleted] = useState<boolean>(false);
-
-    const storageKey = `respostas_${userId}_${taskId}`;
+    const [grades, setGrades] = useState<Record<string, number>>({});
 
     const fetchTaskDetails = async () => {
         try {
-            const response = await api.get(`/tasks/${taskId}`);
-            const loadedTask: Task = response.data;
+            const [taskResponse, studentsResponse] = await Promise.all([
+                api.get(`/tasks/${taskId}`),
+                api.get('/users'),
+            ]);
+
+            const loadedTask: Task = taskResponse.data;
+            const loadedStudents: Student[] = studentsResponse.data;
+
             setTask(loadedTask);
+            setStudents(loadedStudents);
 
-            const storedData = JSON.parse(
-                localStorage.getItem(storageKey) || '{}',
-            );
-            const savedResponses = storedData.responses || {};
-
-            const initialResponses: Record<string, string> = {};
-            for (const question of loadedTask.questions) {
-                initialResponses[question._id] =
-                    savedResponses[question._id] || '';
-            }
-
-            setResponses(initialResponses);
-            setIsCompleted(storedData.isCompleted || false);
+            const initialGrades: Record<string, number> = {};
+            loadedTask.studentGrades.forEach((grade) => {
+                initialGrades[grade.studentId] = grade.percentageGrade;
+            });
+            setGrades(initialGrades);
         } catch (err) {
             console.error('Failed to fetch Task details:', err);
             setError(
@@ -69,102 +69,105 @@ export const TaskDetails: React.FC = () => {
         }
     };
 
-    const handleInputChange = (questionId: string, value: string) => {
-        setResponses((prev) => {
-            const updated = { ...prev, [questionId]: value };
-            localStorage.setItem(
-                storageKey,
-                JSON.stringify({ responses: updated, isCompleted }),
-            );
-            return updated;
-        });
+    const handleGradeChange = (studentId: string, value: string) => {
+        const numValue = Math.min(100, Math.max(0, Number(value) || 0));
+        setGrades((prev) => ({
+            ...prev,
+            [studentId]: numValue,
+        }));
     };
 
-    const handleResponse = async () => {
+    const handleSaveGrades = async () => {
         if (!task) return;
 
-        const allAnswered = task.questions.every(
-            (q) => responses[q._id]?.trim() !== '',
-        );
-        if (!allAnswered) {
-            alert('Por favor, responda todas as questões antes de enviar.');
-            return;
-        }
-
         try {
-            const questions = task.questions.map((q) => ({
-                text: q.text,
-                answer: responses[q._id] || '',
-            }));
-
-            const payload = {
-                questions: questions,
-                isCompleted: true,
-            };
-
-            await api.post(`/tasks/${taskId}`, payload, {
-                headers: { 'Content-Type': 'application/json' },
-            });
-
-            setIsCompleted(true);
-            localStorage.setItem(
-                storageKey,
-                JSON.stringify({ responses, isCompleted: true }),
+            const studentGrades = Object.entries(grades).map(
+                ([studentId, percentageGrade]) => ({
+                    studentId,
+                    percentageGrade,
+                }),
             );
 
-            alert('Respostas enviadas com sucesso!');
-            window.location.reload();
+            await api.post(`/tasks/${taskId}`, {
+                studentGrades,
+            });
+
+            alert('Notas salvas com sucesso!');
         } catch (err) {
-            console.error('Erro ao enviar respostas:', err);
-            alert('Erro ao enviar respostas. Tente novamente.');
+            console.error('Erro ao salvar notas:', err);
+            alert('Erro ao salvar notas. Tente novamente.');
         }
     };
 
     useEffect(() => {
-        if (taskId && userId) {
+        if (taskId) {
             fetchTaskDetails();
         }
-    }, [taskId, userId]);
+    }, [taskId]);
 
     if (loading) return <p>Carregando detalhes da tarefa...</p>;
     if (error) return <p style={{ color: 'red' }}>{error}</p>;
     if (!task) return <p>Nenhuma tarefa encontrada.</p>;
 
+    const calculateFinalGrade = (percentageGrade: number) => {
+        return (percentageGrade / 100) * task.totalGrade;
+    };
+
     return (
         <TaskDetailsContainer>
             <TaskTitle>{task.title}</TaskTitle>
-            <TaskInfo>
-                Informações sobre a tarefa -{' '}
-                {isCompleted ? 'Concluída' : 'Pendente'}
-            </TaskInfo>
-            <QuestionsContainer>
-                {task.questions.map((question) => (
-                    <QuestionCard key={question._id}>
-                        <QuestionText>{question.text}</QuestionText>
-                        {isCompleted ? (
-                            <p>{responses[question._id]}</p>
-                        ) : (
-                            <TextArea
-                                placeholder="Digite sua resposta aqui"
-                                value={responses[question._id] || ''}
-                                onChange={(e) =>
-                                    handleInputChange(
-                                        question._id,
-                                        e.target.value,
-                                    )
-                                }
-                            />
-                        )}
-                    </QuestionCard>
-                ))}
-            </QuestionsContainer>
-            {!isCompleted && (
-                <TaskActionButton onClick={handleResponse}>
-                    Enviar resposta da tarefa
-                </TaskActionButton>
+            <Description>{task.description}</Description>
+            <TaskInfo>Nota Total da Tarefa: {task.totalGrade} pontos</TaskInfo>
+
+            {hasRole('coordenador') && (
+                <GradesContainer>
+                    {students.map((student) => (
+                        <StudentGradeCard key={student._id}>
+                            <h3>{student.name}</h3>
+                            <div>
+                                <GradeInput
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    value={grades[student._id] || ''}
+                                    onChange={(e) =>
+                                        handleGradeChange(
+                                            student._id,
+                                            e.target.value,
+                                        )
+                                    }
+                                    placeholder="Porcentagem da nota"
+                                />
+                                <span>
+                                    Nota Final:{' '}
+                                    {calculateFinalGrade(
+                                        grades[student._id] || 0,
+                                    ).toFixed(1)}
+                                </span>
+                            </div>
+                        </StudentGradeCard>
+                    ))}
+                    <TaskActionButton onClick={handleSaveGrades}>
+                        Salvar Notas
+                    </TaskActionButton>
+                </GradesContainer>
             )}
-            {hasRole('orientador') && (
-                <RoleInfo>Visualizando tarefas dos alunos.</RoleInfo>
+
+            {!hasRole('coordenador') && (
+                <StudentGradeCard>
+                    <h3>Sua Nota</h3>
+                    <div>
+                        <span>
+                            Porcentagem: {grades[user?._id || ''] || 0}%
+                        </span>
+                        <span>
+                            Nota Final:{' '}
+                            {calculateFinalGrade(
+                                grades[user?._id || ''] || 0,
+                            ).toFixed(1)}
+                        </span>
+                    </div>
+                </StudentGradeCard>
             )}
         </TaskDetailsContainer>
     );
