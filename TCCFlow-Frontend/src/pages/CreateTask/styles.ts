@@ -11,7 +11,7 @@ export const CreateTaskContainer = styled.div`
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     h1 {
         font-size: 2rem;
-        color: ${({ theme }) => theme['blue-600']};
+        color: ${({ theme }) => theme['blue-500']};
         margin-bottom: 2rem;
         text-align: center;
     }
