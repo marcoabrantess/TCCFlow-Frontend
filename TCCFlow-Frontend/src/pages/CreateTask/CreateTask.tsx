@@ -1,3 +1,4 @@
+// CreateTask.tsx
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -22,9 +23,16 @@ const taskSchema = z.object({
         .min(10, 'A descrição deve ter pelo menos 10 caracteres')
         .nonempty('A descrição é obrigatória'),
     totalGrade: z
-        .number()
+        .number({ invalid_type_error: 'A nota total deve ser um número' })
         .min(0, 'A nota deve ser maior que 0')
         .max(100, 'A nota máxima é 100'),
+    deadline: z.preprocess(
+        (arg) => {
+            if (typeof arg === 'string' || arg instanceof Date)
+                return new Date(arg);
+        },
+        z.date({ required_error: 'O prazo (deadline) é obrigatório' }),
+    ),
 });
 
 type TaskFormValues = z.infer<typeof taskSchema>;
@@ -82,6 +90,18 @@ export const CreateTask: React.FC = () => {
                     />
                     {errors.totalGrade && (
                         <ErrorText>{errors.totalGrade.message}</ErrorText>
+                    )}
+                </FormGroup>
+
+                <FormGroup>
+                    <label htmlFor="deadline">Prazo</label>
+                    <input
+                        type="date"
+                        id="deadline"
+                        {...register('deadline')}
+                    />
+                    {errors.deadline && (
+                        <ErrorText>{errors.deadline.message}</ErrorText>
                     )}
                 </FormGroup>
 

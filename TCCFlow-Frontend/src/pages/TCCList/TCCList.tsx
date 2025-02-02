@@ -8,6 +8,7 @@ import {
     CreateButton,
     SearchInput,
 } from './styles';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface TCC {
     _id: number;
@@ -16,6 +17,7 @@ interface TCC {
 }
 
 export const TCCList: React.FC = () => {
+    const { hasRole } = useAuth();
     const navigate = useNavigate();
     const [tccs, setTCCs] = useState<TCC[]>([]);
     const [filteredTCCs, setFilteredTCCs] = useState<TCC[]>([]);
@@ -74,9 +76,11 @@ export const TCCList: React.FC = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <CreateButton onClick={handleCreateClick}>
-                Criar Novo TCC
-            </CreateButton>
+            {(hasRole('coordenador') || hasRole('orientador')) && (
+                <CreateButton onClick={handleCreateClick}>
+                    Criar Novo TCC
+                </CreateButton>
+            )}
             <TCCListDiv>
                 {filteredTCCs.map((tcc) => (
                     <TCCItem

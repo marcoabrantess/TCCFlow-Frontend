@@ -13,8 +13,6 @@ import {
 interface Task {
     _id: number;
     title: string;
-    questions: any;
-    isCompleted: boolean;
 }
 
 export const TaskList: React.FC = () => {
@@ -64,7 +62,6 @@ export const TaskList: React.FC = () => {
                 {tasks.map((task) => (
                     <TaskItem
                         key={task._id}
-                        $completed={task.isCompleted}
                         onClick={() => handleTaskClick(task._id)}
                     >
                         {task.title}

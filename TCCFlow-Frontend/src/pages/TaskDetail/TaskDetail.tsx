@@ -1,3 +1,4 @@
+// TaskDetail.tsx
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../services/api';
@@ -10,7 +11,6 @@ import {
     StudentGradeCard,
     GradeInput,
     TaskActionButton,
-    //RoleInfo,
     Description,
 } from './styles';
 
@@ -29,6 +29,7 @@ interface Task {
     title: string;
     description: string;
     totalGrade: number;
+    deadline: string;
     studentGrades: StudentGrade[];
 }
 
@@ -51,8 +52,13 @@ export const TaskDetails: React.FC = () => {
             const loadedTask: Task = taskResponse.data;
             const loadedStudents: Student[] = studentsResponse.data;
 
+            const studentRole = 'estudante';
+            const filteredStudents = loadedStudents.filter(
+                (user: any) => user.userGroups.indexOf(studentRole) !== -1,
+            );
+
             setTask(loadedTask);
-            setStudents(loadedStudents);
+            setStudents(filteredStudents);
 
             const initialGrades: Record<string, number> = {};
             loadedTask.studentGrades.forEach((grade) => {
@@ -118,8 +124,16 @@ export const TaskDetails: React.FC = () => {
             <TaskTitle>{task.title}</TaskTitle>
             <Description>{task.description}</Description>
             <TaskInfo>Nota Total da Tarefa: {task.totalGrade} pontos</TaskInfo>
+            <TaskInfo>
+                Prazo:{' '}
+                {new Date(task.deadline).toLocaleDateString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                })}
+            </TaskInfo>
 
-            {hasRole('coordenador') && (
+            {(hasRole('coordenador') || hasRole('orientador')) && (
                 <GradesContainer>
                     {students.map((student) => (
                         <StudentGradeCard key={student._id}>
@@ -136,7 +150,8 @@ export const TaskDetails: React.FC = () => {
                                             e.target.value,
                                         )
                                     }
-                                    placeholder="Porcentagem da nota"
+                                    placeholder="%"
+                                    disabled={!hasRole('coordenador')}
                                 />
                                 <span>
                                     Nota Final:{' '}
@@ -147,15 +162,17 @@ export const TaskDetails: React.FC = () => {
                             </div>
                         </StudentGradeCard>
                     ))}
-                    <TaskActionButton onClick={handleSaveGrades}>
-                        Salvar Notas
-                    </TaskActionButton>
+                    {hasRole('coordenador') && (
+                        <TaskActionButton onClick={handleSaveGrades}>
+                            Salvar Notas
+                        </TaskActionButton>
+                    )}
                 </GradesContainer>
             )}
 
-            {!hasRole('coordenador') && (
+            {hasRole('estudante') && (
                 <StudentGradeCard>
-                    <h3>Sua Nota</h3>
+                    <h3>Nota</h3>
                     <div>
                         <span>
                             Porcentagem: {grades[user?._id || ''] || 0}%

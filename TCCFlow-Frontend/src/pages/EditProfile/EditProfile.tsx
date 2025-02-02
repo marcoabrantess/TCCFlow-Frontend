@@ -144,14 +144,6 @@ export const EditProfile: React.FC = () => {
                     )}
                 </FormGroup>
 
-                <FormGroup>
-                    <label htmlFor="photo">Foto</label>
-                    <input type="file" id="photo" {...register('photo')} />
-                    {errors.photo && (
-                        <ErrorText>{errors.photo.message}</ErrorText>
-                    )}
-                </FormGroup>
-
                 <SubmitButton type="submit">Salvar Alterações</SubmitButton>
                 {submitSuccess && (
                     <SuccessMessage>
